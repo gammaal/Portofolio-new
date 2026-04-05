@@ -1,5 +1,5 @@
 import React from 'react'
-import fotoSaya from '../assets/my foto.jpeg'
+import fotoSaya from '../assets/saya.jpeg'
 
 function About() {
   const styles = {
