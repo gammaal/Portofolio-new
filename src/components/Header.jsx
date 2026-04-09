@@ -4,29 +4,31 @@ function Header() {
   const styles = {
     header: {
       backgroundColor: '#2c3e50',
-      padding: '15px 0',
+      padding: '15px 20px',
       position: 'fixed',
       top: 0,
+      left: 0,
+      right: 0,
       width: '100%',
       zIndex: 1000,
       boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
     },
     nav: {
-      maxWidth: '1200px',
-      margin: '0 auto',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '0 20px'
+      width: '100%'
     },
     logo: {
       color: 'white',
       fontSize: '24px',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      marginLeft: '20px'
     },
     navLinks: {
       display: 'flex',
-      gap: '20px'
+      gap: '20px',
+      marginRight: '20px'
     },
     link: {
       color: 'white',
@@ -46,7 +48,7 @@ function Header() {
   return (
     <header style={styles.header}>
       <nav style={styles.nav}>
-        <div style={styles.logo}>MyPortfolio</div>
+        <div style={styles.logo}>My Portfolio</div>
         <div style={styles.navLinks}>
           <a style={styles.link} onClick={() => scrollTo('home')}>Home</a>
           <a style={styles.link} onClick={() => scrollTo('about')}>About</a>

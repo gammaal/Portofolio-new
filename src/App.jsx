@@ -9,7 +9,12 @@ import Footer from './components/Footer'
 
 function App() {
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ 
+      fontFamily: 'Arial, sans-serif',
+      margin: 0,
+      padding: 0,
+      width: '100%'
+    }}>
       <Header />
       <Hero />
       <About />

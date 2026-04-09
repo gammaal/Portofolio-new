@@ -30,7 +30,7 @@ function About() {
     image: {
       flex: 1,
       width: '100%',
-      maxWidth: '250px',  // Tambahkan ini untuk batasi ukuran
+      maxWidth: '250px',  
       height: 'auto',
       borderRadius: '10px',
       objectFit: 'cover',

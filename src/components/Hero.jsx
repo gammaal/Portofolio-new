@@ -9,11 +9,15 @@ function Hero() {
       minHeight: '400px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      width: '100%',
+      margin: 0
     },
     container: {
       maxWidth: '800px',
-      margin: '0 auto'
+      width: '100%',
+      margin: '0 auto',
+      padding: '0 20px'
     },
     title: {
       fontSize: '48px',
