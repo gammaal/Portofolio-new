@@ -1,43 +1,6 @@
 import React from 'react'
 
 function Header() {
-  const styles = {
-    header: {
-      backgroundColor: '#2c3e50',
-      padding: '15px 20px',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      width: '100%',
-      zIndex: 1000,
-      boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-    },
-    nav: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%'
-    },
-    logo: {
-      color: 'white',
-      fontSize: '24px',
-      fontWeight: 'bold',
-      marginLeft: '20px'
-    },
-    navLinks: {
-      display: 'flex',
-      gap: '20px',
-      marginRight: '20px'
-    },
-    link: {
-      color: 'white',
-      textDecoration: 'none',
-      cursor: 'pointer',
-      padding: '5px 10px'
-    }
-  }
-
   const scrollTo = (id) => {
     const element = document.getElementById(id)
     if (element) {
@@ -45,17 +8,40 @@ function Header() {
     }
   }
 
+  const links = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'certificates', label: 'Sertifikat' },
+    { id: 'contact', label: 'Contact' },
+  ]
+
   return (
-    <header style={styles.header}>
-      <nav style={styles.nav}>
-        <div style={styles.logo}>My Portfolio</div>
-        <div style={styles.navLinks}>
-          <a style={styles.link} onClick={() => scrollTo('home')}>Home</a>
-          <a style={styles.link} onClick={() => scrollTo('about')}>About</a>
-          <a style={styles.link} onClick={() => scrollTo('projects')}>Projects</a>
-          <a style={styles.link} onClick={() => scrollTo('skills')}>Skills</a>
-          <a style={styles.link} onClick={() => scrollTo('contact')}>Contact</a>
-        </div>
+    <header className="site-header">
+      <nav className="site-header__bar" aria-label="Navigasi utama">
+        <button
+          type="button"
+          className="site-logo"
+          onClick={() => scrollTo('home')}
+          aria-label="Ke beranda"
+        >
+          Portofolio<span className="site-logo__dot">.</span>
+        </button>
+
+        <ul className="site-nav">
+          {links.map((item) => (
+            <li key={item.id} className="site-nav__item">
+              <button
+                type="button"
+                className="site-nav__link"
+                onClick={() => scrollTo(item.id)}
+              >
+                {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
       </nav>
     </header>
   )

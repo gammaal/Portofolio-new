@@ -4,25 +4,24 @@ import Hero from './components/Hero'
 import About from './components/About'
 import Projects from './components/Projects'
 import Skills from './components/Skills'
+import Certificates from './components/Certificates'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 
 function App() {
   return (
-    <div style={{ 
-      fontFamily: 'Arial, sans-serif',
-      margin: 0,
-      padding: 0,
-      width: '100%'
-    }}>
+    <>
       <Header />
-      <Hero />
-      <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <main>
+        <Hero />
+        <About />
+        <Projects />
+        <Skills />
+        <Certificates />
+        <Contact />
+      </main>
       <Footer />
-    </div>
+    </>
   )
 }
 

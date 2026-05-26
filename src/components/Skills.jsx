@@ -1,67 +1,42 @@
 import React from 'react'
+import { skills } from '../data/skills'
 
 function Skills() {
-  const skills = [
-    { name: 'HTML/CSS', level: 85 },
-    { name: 'JavaScript', level: 80 },
-    { name: 'React JS', level: 75 },
-    { name: 'Laravel', level: 70 }
-  ]
-
-  const styles = {
-    section: {
-      padding: '60px 20px',
-      backgroundColor: 'white'
-    },
-    container: {
-      maxWidth: '800px',
-      margin: '0 auto'
-    },
-    title: {
-      textAlign: 'center',
-      fontSize: '36px',
-      marginBottom: '40px',
-      color: '#2c3e50'
-    },
-    skillItem: {
-      marginBottom: '20px'
-    },
-    skillName: {
-      marginBottom: '5px',
-      color: '#555',
-      fontWeight: 'bold'
-    },
-    skillBar: {
-      backgroundColor: '#ecf0f1',
-      height: '30px',
-      borderRadius: '5px',
-      overflow: 'hidden'
-    },
-    skillProgress: {
-      backgroundColor: '#3498db',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      paddingLeft: '10px',
-      color: 'white',
-      fontSize: '14px'
-    }
-  }
-
   return (
-    <section id="skills" style={styles.section}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>Keahlian</h2>
-        {skills.map((skill, index) => (
-          <div key={index} style={styles.skillItem}>
-            <div style={styles.skillName}>{skill.name}</div>
-            <div style={styles.skillBar}>
-              <div style={{...styles.skillProgress, width: `${skill.level}%`}}>
-                {skill.level}%
-              </div>
+    <section id="skills" className="section section--alt">
+      <div className="container container--narrow">
+        <p className="section-eyebrow">Kompetensi</p>
+        <h2 className="section-title">Keahlian</h2>
+
+        <div className="card skills-card">
+          {skills.length === 0 ? (
+            <p className="skills-empty">Belum ada keahlian.</p>
+          ) : (
+            <div className="skills-list">
+              {skills.map((skill) => (
+                <div key={skill.name} className="skill-item">
+                  <div className="skill-item__label">
+                    <span className="skill-item__title-group">
+                      {skill.icon && <span className="skill-item__icon">{skill.icon}</span>}
+                      <span>{skill.name}</span>
+                    </span>
+                    <span className="skill-item__percent">{skill.level}%</span>
+                  </div>
+                  <div className="skill-bar">
+                    <div
+                      className="skill-bar__fill"
+                      style={{ width: `${Math.min(100, Math.max(0, skill.level))}%` }}
+                      role="progressbar"
+                      aria-valuenow={skill.level}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+          )}
+        </div>
       </div>
     </section>
   )

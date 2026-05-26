@@ -1,66 +1,41 @@
-import React from 'react'
-import fotoSaya from '../assets/saya.jpeg'
+import React from "react";
+import fotoSaya from "../assets/saya.jpeg";
 
 function About() {
-  const styles = {
-    section: {
-      padding: '60px 20px',
-      backgroundColor: 'white'
-    },
-    container: {
-      maxWidth: '1000px',
-      margin: '0 auto'
-    },
-    title: {
-      textAlign: 'center',
-      fontSize: '36px',
-      marginBottom: '40px',
-      color: '#2c3e50'
-    },
-    content: {
-      display: 'flex',
-      gap: '40px',
-      alignItems: 'center'
-    },
-    text: {
-      flex: 1,
-      lineHeight: '1.8',
-      color: '#555'
-    },
-    image: {
-      flex: 1,
-      width: '100%',
-      maxWidth: '250px',  
-      height: 'auto',
-      borderRadius: '10px',
-      objectFit: 'cover',
-      display: 'block',
-      margin: '0 auto'
-    }
-  }
-
   return (
-    <section id="about" style={styles.section}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>Tentang Saya</h2>
-        <div style={styles.content}>
-          <div style={styles.text}>
-            <p>
+    <section id="about" className="section section--white">
+      <div className="container">
+        <p className="section-eyebrow">Profil</p>
+        <h2 className="section-title">Tentang Saya</h2>
+        <div className="about-grid">
+          <div className="card about-card">
+            <p className="about-text">
+              <b>
               Saya pelajar di SMK Wikrama Bogor, jurusan PPLG (RPL).
+              </b>
             </p>
-            <p style={{ marginTop: '15px' }}>
-              Sedang belajar membuat website dan aplikasi.
+            <p className="about-text">
+              Saya seorang pengembang web antusias yang memiliki ketertarikan
+              besar dalam dunia teknologi dan pemrograman. Saat ini saya sedang
+              mendalami pengembangan aplikasi mobile dengan Flutter dan terus
+              memperdalam rekayasa perangkat lunak web modern. Berkomitmen untuk
+              terus belajar dan berkontribusi dalam proyek open-source, serta
+              selalu mengikuti perkembangan arsitektur software dan best
+              practices terbaru.
             </p>
           </div>
-          <img 
-            src={fotoSaya} 
-            alt="Foto Saya" 
-            style={styles.image}
-          />
+
+          <div className="card about-photo-wrap">
+            <img
+              src={fotoSaya}
+              alt="Foto Gamma Alfatah"
+              className="about-photo"
+            />
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default About
+export default About;

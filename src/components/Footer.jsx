@@ -1,19 +1,13 @@
 import React from 'react'
 
 function Footer() {
-  const styles = {
-    footer: {
-      backgroundColor: '#2c3e50',
-      color: 'white',
-      textAlign: 'center',
-      padding: '20px',
-      marginTop: '0'
-    }
-  }
+  const year = new Date().getFullYear()
 
   return (
-    <footer style={styles.footer}>
-      <p>&copy;Portofolio</p>
+    <footer className="site-footer">
+      <p>
+        &copy; {year} <strong>Gamma Alfatah</strong> — Portofolio
+      </p>
     </footer>
   )
 }
