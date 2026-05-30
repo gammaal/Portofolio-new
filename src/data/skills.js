@@ -14,8 +14,8 @@
 
 export const skills = [
   { name: 'HTML/CSS', level: 85, icon: 'html' },
-  { name: 'JavaScript', level: 80, icon: 'javascript' },
-  { name: 'React JS', level: 75, icon: 'react' },
+  { name: 'JavaScript', level: 60, icon: 'javascript' },
+  { name: 'React JS', level: 65, icon: 'react' },
   { name: 'Laravel', level: 70, icon: 'laravel' },
   { name: 'Flutter', level: 75, icon: 'flutter' },
   { name: 'Express', level: 60, icon: 'express' },
