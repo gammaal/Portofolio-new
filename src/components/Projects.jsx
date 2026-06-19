@@ -1,20 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { projects } from '../data/projects'
+import { FiExternalLink, FiGithub } from 'react-icons/fi'
 
-function ProjectImage({ src, alt }) {
+function PjImage({ src, alt }) {
   const [failed, setFailed] = useState(false)
-
-  if (!src || failed) {
-    return (
-      <div className="project-card-placeholder" role="img" aria-label={alt}>
-        <span>Taruh foto di public/projects/</span>
-      </div>
-    )
-  }
-
+  if (!src || failed)
+    return <div className="pj__placeholder">Belum ada gambar</div>
   return (
     <img
-      className="project-card-media"
+      className="pj__img"
       src={src}
       alt={alt}
       loading="lazy"
@@ -23,60 +17,72 @@ function ProjectImage({ src, alt }) {
   )
 }
 
-function Projects() {
+export default function Projects() {
+  const sec = useRef(null)
+
+  useEffect(() => {
+    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+      { threshold: 0.1 }
+    )
+    els.forEach(el => obs.observe(el))
+    return () => obs.disconnect()
+  }, [])
+
   return (
-    <section id="projects" className="projects-section">
-      <div className="container">
-        <p className="section-eyebrow">Portofolio</p>
-        <h2 className="section-title">Project Saya</h2>
+    <section id="projects" className="projects" ref={sec}>
+      <div className="wrap">
+        <div className="projects__header reveal">
+          <h2 className="projects__heading">
+            Karya &amp; <span>Project</span>
+          </h2>
+          <span className="projects__count">{projects.length} project</span>
+        </div>
 
         {projects.length === 0 ? (
-          <div className="card projects-empty">
-            <p>Belum ada project. Tambahkan di src/data/projects.js</p>
-          </div>
+          <p style={{ color: 'var(--text-3)', fontStyle: 'italic' }}>
+            Tambahkan project di src/data/projects.js
+          </p>
         ) : (
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <article key={project.id} className="project-card">
-                <div className="project-card__media-wrap">
-                  <ProjectImage src={project.image} alt={project.title} />
+          <div className="projects__grid reveal reveal-d1">
+            {projects.map((p) => (
+              <article key={p.id} className="pj">
+                <div className="pj__img-wrap">
+                  <PjImage src={p.image} alt={p.title} />
                 </div>
-
-                <div className="project-card-body">
-                  <h3 className="project-card-title">{project.title}</h3>
-                  <p className="project-card-desc">{project.description}</p>
-
-                  {(project.tags?.length ?? 0) > 0 && (
-                    <div className="project-tag-row">
-                      {project.tags.map((tag) => (
-                        <span key={`${project.id}-${tag}`} className="project-tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="project-actions">
-                    {project.demoUrl ? (
+                <div className="pj__body">
+                  <div className="pj__meta">
+                    {p.tags?.map((t, i) => (
+                      <React.Fragment key={t}>
+                        {i > 0 && <span className="pj__sep" />}
+                        <span className="pj__tag">{t}</span>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <h3 className="pj__title">{p.title}</h3>
+                  <p className="pj__desc">{p.description}</p>
+                  <div className="pj__links">
+                    {p.demoUrl && (
                       <a
-                        href={project.demoUrl}
-                        className="project-btn-primary"
-                        target={project.demoUrl.startsWith('http') ? '_blank' : undefined}
-                        rel={project.demoUrl.startsWith('http') ? 'noreferrer' : undefined}
+                        href={p.demoUrl}
+                        className="pj__link pj__link--primary"
+                        target="_blank"
+                        rel="noreferrer"
                       >
-                        Lihat
+                        <FiExternalLink size={12} /> Demo
                       </a>
-                    ) : null}
-                    {project.repoUrl ? (
+                    )}
+                    {p.repoUrl && (
                       <a
-                        href={project.repoUrl}
-                        className="project-btn-secondary"
-                        target={project.repoUrl.startsWith('http') ? '_blank' : undefined}
-                        rel={project.repoUrl.startsWith('http') ? 'noreferrer' : undefined}
+                        href={p.repoUrl}
+                        className="pj__link"
+                        target="_blank"
+                        rel="noreferrer"
                       >
-                        Repo
+                        <FiGithub size={12} /> Kode
                       </a>
-                    ) : null}
+                    )}
                   </div>
                 </div>
               </article>
@@ -87,5 +93,3 @@ function Projects() {
     </section>
   )
 }
-
-export default Projects

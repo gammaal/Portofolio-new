@@ -1,61 +1,80 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { certificates } from '../data/certificates'
+import { FiExternalLink } from 'react-icons/fi'
 
-function CertificateImage({ cert }) {
+function CertImg({ cert }) {
   const [failed, setFailed] = useState(false)
-  const alt = `Sertifikat ${cert.id}`
-
-  const media = failed ? (
-    <div className="cert-card__placeholder" role="img" aria-label={alt}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-        <path d="M14 2v6h6M8 13h8M8 17h5" strokeLinecap="round" />
-      </svg>
-      <span>Taruh gambar di public/certificates/</span>
-    </div>
-  ) : (
+  if (failed) {
+    return (
+      <div className="cert__placeholder">
+        <FiExternalLink size={18} style={{ opacity: 0.3 }} />
+        <span>Belum ada gambar</span>
+      </div>
+    )
+  }
+  return (
     <img
-      className="cert-card__img"
+      className="cert__img"
       src={cert.image}
-      alt={alt}
+      alt={`Sertifikat ${cert.id}`}
       loading="lazy"
       onError={() => setFailed(true)}
     />
   )
-
-  if (cert.link) {
-    return (
-      <a
-        href={cert.link}
-        className="cert-card__link"
-        target="_blank"
-        rel="noreferrer"
-        aria-label={`Buka sertifikat ${cert.id}`}
-      >
-        {media}
-      </a>
-    )
-  }
-
-  return <div className="cert-card__media">{media}</div>
 }
 
-function Certificates() {
+export default function Certificates() {
+  const sec = useRef(null)
+
+  useEffect(() => {
+    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+      { threshold: 0.08 }
+    )
+    els.forEach(el => obs.observe(el))
+    return () => obs.disconnect()
+  }, [])
+
   return (
-    <section id="certificates" className="section section--certificates">
-      <div className="container">
-        <p className="section-eyebrow">Pencapaian</p>
-        <h2 className="section-title">Sertifikat</h2>
+    <section id="certificates" className="certs" ref={sec}>
+      <div className="wrap">
+        <div className="certs__heading-row reveal">
+          <h2 className="certs__heading">
+            Sertifikat &amp; <em>Pencapaian</em>
+          </h2>
+          <span className="certs__num">{certificates.length} sertifikat</span>
+        </div>
 
         {certificates.length === 0 ? (
-          <div className="card cert-empty">
-            <p>Belum ada sertifikat. Tambahkan di <code>src/data/certificates.js</code></p>
-          </div>
+          <p style={{ color: 'var(--text-3)', fontStyle: 'italic' }}>
+            Tambahkan di src/data/certificates.js
+          </p>
         ) : (
-          <div className="cert-grid">
-            {certificates.map((cert) => (
-              <article key={cert.id} className="cert-card">
-                <CertificateImage cert={cert} />
+          <div className="certs__grid">
+            {certificates.map((c, i) => (
+              <article
+                key={c.id}
+                className={`cert reveal reveal-d${Math.min(i + 1, 5)}`}
+              >
+                {c.link ? (
+                  <a
+                    href={c.link}
+                    className="cert__inner"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Buka sertifikat ${c.id}`}
+                  >
+                    <CertImg cert={c} />
+                    <div className="cert__hover">
+                      <FiExternalLink size={20} />
+                    </div>
+                  </a>
+                ) : (
+                  <div className="cert__inner">
+                    <CertImg cert={c} />
+                  </div>
+                )}
               </article>
             ))}
           </div>
@@ -64,5 +83,3 @@ function Certificates() {
     </section>
   )
 }
-
-export default Certificates
