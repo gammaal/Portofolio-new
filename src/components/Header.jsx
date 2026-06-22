@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const links = [
   { id: 'home',         label: 'Home' },
@@ -10,18 +10,21 @@ const links = [
 ]
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
-  const [active, setActive]     = useState('home')
+  const [scrolled,  setScrolled]  = useState(false)
+  const [active,    setActive]    = useState('home')
+  const [progress,  setProgress]  = useState(0)
 
   useEffect(() => {
     const handler = () => {
-      setScrolled(window.scrollY > 40)
+      const scrolled = window.scrollY
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(total > 0 ? (scrolled / total) * 100 : 0)
+      setScrolled(scrolled > 40)
+
       const ids = links.map(l => l.id)
       for (let i = ids.length - 1; i >= 0; i--) {
         const el = document.getElementById(ids[i])
-        if (el && window.scrollY >= el.offsetTop - 120) {
-          setActive(ids[i]); break
-        }
+        if (el && scrolled >= el.offsetTop - 120) { setActive(ids[i]); break }
       }
     }
     window.addEventListener('scroll', handler, { passive: true })
@@ -32,6 +35,9 @@ export default function Header() {
 
   return (
     <header className={`nav${scrolled ? ' scrolled' : ''}`}>
+      {/* scroll progress bar */}
+      <div className="nav__progress" style={{ width: `${progress}%` }} aria-hidden="true" />
+
       <div className="nav__inner">
         <button className="nav__logo" onClick={() => go('home')}>
           Gamma Alfatah

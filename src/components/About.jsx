@@ -1,21 +1,78 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import fotoSaya from '../assets/saya.jpeg'
 
-function useReveal(ref) {
+/* count-up hook */
+function useCountUp(target, duration = 1200, enabled = false) {
+  const [val, setVal] = useState(0)
   useEffect(() => {
-    const els = ref.current?.querySelectorAll('.reveal') ?? []
-    const obs = new IntersectionObserver(
-      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
-      { threshold: 0.12 }
-    )
-    els.forEach(el => obs.observe(el))
-    return () => obs.disconnect()
-  }, [ref])
+    if (!enabled) return
+    const start = performance.now()
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1)
+      // ease out cubic
+      const ease = 1 - Math.pow(1 - p, 3)
+      setVal(Math.round(ease * target))
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [enabled, target, duration])
+  return val
 }
 
+/* 3-D tilt on photo */
+function TiltPhoto({ src, alt }) {
+  const ref = useRef(null)
+
+  const onMove = (e) => {
+    const el  = ref.current
+    if (!el) return
+    const { left, top, width, height } = el.getBoundingClientRect()
+    const x = (e.clientX - left) / width  - 0.5   // -0.5 … 0.5
+    const y = (e.clientY - top)  / height - 0.5
+    el.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`
+  }
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = ''
+  }
+
+  return (
+    <div
+      className="about__photo-frame"
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+    >
+      <img src={src} alt={alt} className="about__photo-img" />
+    </div>
+  )
+}
+
+const counters = [
+  { label: 'Teknologi', value: 6 },
+  { label: 'Project',   value: 4 },
+  { label: 'Sertifikat', value: 5 },
+]
+
 export default function About() {
-  const sec = useRef(null)
-  useReveal(sec)
+  const sec        = useRef(null)
+  const [fired, setFired] = useState(false)
+
+  useEffect(() => {
+    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+      { threshold: 0.1 }
+    )
+    els.forEach(el => obs.observe(el))
+
+    const secObs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setFired(true); secObs.disconnect() } },
+      { threshold: 0.2 }
+    )
+    if (sec.current) secObs.observe(sec.current)
+
+    return () => { obs.disconnect(); secObs.disconnect() }
+  }, [])
 
   return (
     <section id="about" className="about" ref={sec}>
@@ -43,30 +100,29 @@ export default function About() {
             </div>
 
             <div className="about__counters reveal reveal-d3">
-              <div className="about__counter">
-                <span className="about__counter-num">6+</span>
-                <span className="about__counter-text">Teknologi</span>
-              </div>
-              <div className="about__counter">
-                <span className="about__counter-num">4+</span>
-                <span className="about__counter-text">Project</span>
-              </div>
-              <div className="about__counter">
-                <span className="about__counter-num">5+</span>
-                <span className="about__counter-text">Sertifikat</span>
-              </div>
+              {counters.map(c => (
+                <CounterCell key={c.label} {...c} enabled={fired} />
+              ))}
             </div>
           </div>
 
-          {/* Right — photo */}
+          {/* Right — photo with tilt */}
           <div className="about__photo-side reveal reveal-d2">
-            <div className="about__photo-frame">
-              <img src={fotoSaya} alt="Gamma Alfatah" className="about__photo-img" />
-            </div>
+            <TiltPhoto src={fotoSaya} alt="Gamma Alfatah" />
             <div className="about__photo-deco" />
           </div>
         </div>
       </div>
     </section>
+  )
+}
+
+function CounterCell({ label, value, enabled }) {
+  const n = useCountUp(value, 1000, enabled)
+  return (
+    <div className="about__counter">
+      <span className="about__counter-num">{n}+</span>
+      <span className="about__counter-text">{label}</span>
+    </div>
   )
 }

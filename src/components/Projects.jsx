@@ -42,7 +42,6 @@ export default function Projects() {
 
         {projects.length === 0 ? (
           <p style={{ color: 'var(--text-3)', fontStyle: 'italic' }}>
-            Tambahkan project di src/data/projects.js
           </p>
         ) : (
           <div className="projects__grid reveal reveal-d1">

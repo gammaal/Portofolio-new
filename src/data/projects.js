@@ -18,7 +18,7 @@ export const projects = [
     id: 'project-1',
     title: 'Project 1',
     description:
-      'Deskripsi singkat project kamu. Jelaskan fitur utama dan manfaatnya.',
+      '',
     image: '/projects/projek 1.png',
     tags: ['React'],
   },
@@ -26,7 +26,7 @@ export const projects = [
     id: 'project-2',
     title: 'Project 2',
     description:
-      'Deskripsi singkat project kamu. Jelaskan apa yang membuat project ini menarik.',
+      '',
     image: '/projects/projek2.png',
     tags: ['React'],
   },
@@ -34,7 +34,7 @@ export const projects = [
     id: 'project-3',
     title: 'Project 3',
     description:
-      'Deskripsi singkat project kamu. Tambahkan info stack dan tujuan project.',
+      '',
     image: '/projects/projek3.png',
     tags: ['Laravel'],
   },
@@ -42,7 +42,7 @@ export const projects = [
     id: 'project-4',
     title: 'Project 4',
     description:
-      'Deskripsi singkat project kamu. Tambahkan highlight fitur yang paling keren.',
+      '',
     image: '/projects/projek 4.png',
     tags: ['Laravel'],
   },
