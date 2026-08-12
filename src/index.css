@@ -1057,3 +1057,90 @@ main { overflow-x: hidden; }
   .footer__inner { flex-direction: column; gap: 8px; }
   .hero__actions .btn { width: 100%; justify-content: center; }
 }
+
+/* ─── Loading Portal ─────────────────────────────── */
+.portal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #040810;
+  overflow: hidden;
+}
+
+/* enter: fade + scale in */
+.portal-overlay--enter {
+  animation: portalEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes portalEnter {
+  from { opacity: 0; transform: scale(1.05); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* exit: suck into center then vanish */
+.portal-overlay--exit {
+  animation: portalExit 0.9s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  pointer-events: none;
+}
+@keyframes portalExit {
+  0%   { opacity: 1; transform: scale(1); clip-path: circle(120% at 50% 50%); }
+  60%  { opacity: 1; transform: scale(0.98); clip-path: circle(30% at 50% 50%); }
+  85%  { opacity: 0.6; transform: scale(0.92); clip-path: circle(8% at 50% 50%); }
+  100% { opacity: 0;   transform: scale(0.85); clip-path: circle(0% at 50% 50%); }
+}
+
+.portal-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* center text label */
+.portal-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  pointer-events: none;
+  animation: labelPop 0.7s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes labelPop {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.portal-label__name {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(59, 130, 246, 0.9),
+    0 0 60px rgba(29, 78, 216, 0.5);
+}
+
+/* animated loading dots */
+.portal-label__dots {
+  display: flex;
+  gap: 8px;
+}
+.portal-label__dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(96, 165, 250, 0.8);
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.portal-label__dots span:nth-child(1) { animation-delay: 0s; }
+.portal-label__dots span:nth-child(2) { animation-delay: 0.2s; }
+.portal-label__dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+  40%            { transform: scale(1.2); opacity: 1; }
+}
