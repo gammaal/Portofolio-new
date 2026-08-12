@@ -16,8 +16,8 @@ function MagNavBtn({ label, isActive, onClick }) {
   const onMove = e => {
     const el = ref.current; if (!el) return
     const r  = el.getBoundingClientRect()
-    const dx = (e.clientX - r.left - r.width  / 2) * 0.22
-    const dy = (e.clientY - r.top  - r.height / 2) * 0.22
+    const dx = (e.clientX - r.left - r.width  / 2) * 0.12
+    const dy = (e.clientY - r.top  - r.height / 2) * 0.12
     el.style.transform  = `translate(${dx}px, ${dy}px)`
     el.style.transition = 'transform 0.1s ease'
   }

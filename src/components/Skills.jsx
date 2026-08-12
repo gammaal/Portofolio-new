@@ -79,8 +79,8 @@ function SkCard({ skill, index, barFired }) {
     >
       <span className="sk-icon" style={{
         transition: `transform 0.45s cubic-bezier(0.22,1,0.36,1) ${index * 0.06 + 0.2}s`,
-        transform:  vis ? (hov ? 'rotate(8deg) scale(1.12)' : 'rotate(0deg) scale(1)')
-                        : 'rotate(-30deg) scale(0.6)',
+        transform:  vis ? (hov ? 'rotate(6deg) scale(1.1)' : 'rotate(0deg) scale(1)')
+                        : 'rotate(-20deg) scale(0.7)',
       }}>
         {getIcon(skill.icon)}
       </span>

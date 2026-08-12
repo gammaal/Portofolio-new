@@ -31,12 +31,11 @@ function TiltPhoto({ src, alt }) {
     const x = (e.clientX - left) / width  - 0.5
     const y = (e.clientY - top)  / height - 0.5
     el.style.transform =
-      `perspective(700px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) scale(1.03)`
-    // shine overlay follows cursor
+      `perspective(700px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg) scale(1.02)`
     if (shineRef.current) {
       shineRef.current.style.background =
         `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%,
-          rgba(255,255,255,0.09) 0%, transparent 60%)`
+          rgba(255,255,255,0.06) 0%, transparent 55%)`
     }
   }
   const onLeave = () => {
@@ -78,7 +77,7 @@ export default function About() {
         <div className="about__grid">
           {/* Left */}
           <div>
-            <p className="about__label" data-reveal>Tentang saya</p>
+            <p className="section-label" data-reveal>Tentang saya</p>
             <h2 className="about__heading" data-reveal data-reveal-delay="1">
               Kode yang rapi,<br />hasil yang <em>nyata</em>
             </h2>            <div className="about__body" data-reveal data-reveal-delay="2">

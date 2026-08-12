@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.98",
     "@tailwindcss/vite": "^4.2.2",
     "flowbite": "^4.0.1",
     "flowbite-react": "^0.12.17",

@@ -18,7 +18,7 @@ function PjImage({ src, alt }) {
 function PjCard({ project, index }) {
   const obs_ref = useRef(null)
   const [vis, setVis] = useState(false)
-  const { ref: tiltRef, shineRef, onMouseMove, onMouseLeave } = useTilt({ maxTilt: 6, scale: 1.02, shine: 0.06 })
+  const { ref: tiltRef, shineRef, onMouseMove, onMouseLeave } = useTilt({ maxTilt: 3, scale: 1.01, shine: 0.04 })
   const { ref: rippleRef, createRipple } = useRipple('rgba(59,130,246,0.15)')
 
   // merge refs
@@ -59,6 +59,8 @@ function PjCard({ project, index }) {
       }} />
 
       <div className="pj__img-wrap">
+        {/* project number */}
+        <span className="pj__num">{String(index + 1).padStart(2, '0')}</span>
         <PjImage src={project.image} alt={project.title} />
       </div>
       <div className="pj__body">

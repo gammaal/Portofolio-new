@@ -59,7 +59,7 @@ function ContactItem({ item, index }) {
       <span
         className="contact__item-icon"
         style={{
-          transform:  hovered ? 'scale(1.18) rotate(-8deg)' : 'scale(1) rotate(0deg)',
+          transform:  hovered ? 'scale(1.12) rotate(-5deg)' : 'scale(1) rotate(0deg)',
           transition: 'transform 0.35s cubic-bezier(0.22,1,0.36,1)',
         }}
       >

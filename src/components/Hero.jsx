@@ -21,20 +21,20 @@ function ParticleCanvas() {
 
     const initParticles = () => {
       particles = []
-      const count = Math.floor((W * H) / 11000)
+      const count = Math.floor((W * H) / 18000)  // fewer particles
       for (let i = 0; i < count; i++) {
         particles.push({
           x: rand(0, W), y: rand(0, H),
-          ox: 0, oy: 0,          // origin offset (for return spring)
-          vx: rand(-0.15, 0.15), vy: rand(-0.15, 0.15),
-          r:  rand(0.7, 1.9),
-          alpha: rand(0.2, 0.55),
+          ox: 0, oy: 0,
+          vx: rand(-0.12, 0.12), vy: rand(-0.12, 0.12),
+          r:  rand(0.6, 1.5),
+          alpha: rand(0.12, 0.35),  // more transparent
         })
       }
     }
 
-    const REPEL = 90   // px radius
-    const FORCE = 2.8  // push strength
+    const REPEL = 70   // smaller radius
+    const FORCE = 1.8  // gentler push
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H)
@@ -69,18 +69,18 @@ function ParticleCanvas() {
         ctx.fill()
       }
 
-      // connection lines
+      // connection lines — only very close pairs, very faint
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx   = particles[i].x - particles[j].x
           const dy   = particles[i].y - particles[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 100) {
+          if (dist < 70) {
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(59,130,246,${0.1 * (1 - dist / 100)})`
-            ctx.lineWidth = 0.6
+            ctx.strokeStyle = `rgba(59,130,246,${0.055 * (1 - dist / 70)})`
+            ctx.lineWidth = 0.5
             ctx.stroke()
           }
         }
@@ -161,8 +161,8 @@ function MagneticBtn({ children, className, onClick }) {
   const onMove = e => {
     const el = ref.current; if (!el) return
     const r  = el.getBoundingClientRect()
-    el.style.transform = `translate(${(e.clientX - r.left - r.width  / 2) * 0.3}px,
-                                     ${(e.clientY - r.top  - r.height / 2) * 0.3}px)`
+    el.style.transform = `translate(${(e.clientX - r.left - r.width  / 2) * 0.18}px,
+                                     ${(e.clientY - r.top  - r.height / 2) * 0.18}px)`
   }
   const onLeave = () => { if (ref.current) ref.current.style.transform = 'translate(0,0)' }
   return (
@@ -193,12 +193,12 @@ export default function Hero() {
 
   // parallax: content drifts up gently as user scrolls
   useEffect(() => {
-    const el = contentRef.current
+    const el = document.querySelector('.hero__wrap')
     if (!el || window.matchMedia('(pointer: coarse)').matches) return
     const onScroll = () => {
       const y = window.scrollY
-      el.style.transform = `translateY(${y * 0.18}px)`
-      el.style.opacity   = Math.max(0, 1 - y / 500)
+      el.style.transform = `translateY(${y * 0.16}px)`
+      el.style.opacity   = Math.max(0, 1 - y / 480)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -212,7 +212,7 @@ export default function Hero() {
         <div className="hero__spot" ref={spotRef} />
       </div>
 
-      <div className="hero__wrap hero__wrap--centered" ref={contentRef}>
+      <div className="hero__wrap">
         <div className="hero__left">
           <div className="hero__tag">
             <span className="hero__tag-line" />
@@ -224,13 +224,13 @@ export default function Hero() {
           </h1>
 
           <p className="hero__role">
-            Pelajar SMK Wikrama Bogor, jurusan PPLG. Fokus membangun
-            antarmuka yang bersih dan fungsional dengan teknologi modern.
+            Pelajar SMK Wikrama Bogor, jurusan PPLG — membangun antarmuka
+            yang bersih, cepat, dan fungsional dengan teknologi modern.
           </p>
 
           <div className="hero__actions">
             <MagneticBtn className="btn btn--gold" onClick={() => go('projects')}>
-              Lihat Karya <FiArrowRight size={14} />
+              Lihat Karya <FiArrowRight size={13} />
             </MagneticBtn>
             <MagneticBtn className="btn btn--ghost" onClick={() => go('contact')}>
               Hubungi Saya
