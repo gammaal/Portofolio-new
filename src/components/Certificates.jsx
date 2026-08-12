@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { certificates } from '../data/certificates'
 import { FiExternalLink } from 'react-icons/fi'
 
@@ -23,23 +23,79 @@ function CertImg({ cert }) {
   )
 }
 
-export default function Certificates() {
-  const sec = useRef(null)
+/* ── Single cert with 3-D flip reveal ───────────── */
+function CertCard({ cert, index }) {
+  const ref     = useRef(null)
+  const [vis, setVis] = useState(false)
 
   useEffect(() => {
-    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const el = ref.current; if (!el) return
     const obs = new IntersectionObserver(
-      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
-      { threshold: 0.08 }
+      ([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect() } },
+      { threshold: 0.12 }
     )
-    els.forEach(el => obs.observe(el))
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  return (
+    <article
+      ref={ref}
+      className="cert"
+      style={{
+        opacity:   vis ? 1 : 0,
+        transform: vis ? 'perspective(600px) rotateX(0deg) translateY(0)'
+                       : 'perspective(600px) rotateX(18deg) translateY(24px)',
+        transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.08}s,
+                     transform 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.08}s`,
+      }}
+    >
+      {cert.link ? (
+        <a
+          href={cert.link}
+          className="cert__inner"
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Buka sertifikat ${cert.id}`}
+        >
+          <CertImg cert={cert} />
+          <div className="cert__hover"><FiExternalLink size={20} /></div>
+        </a>
+      ) : (
+        <div className="cert__inner">
+          <CertImg cert={cert} />
+        </div>
+      )}
+    </article>
+  )
+}
+
+export default function Certificates() {
+  const sec = useRef(null)
+  const [headVis, setHeadVis] = useState(false)
+
+  useEffect(() => {
+    const row = sec.current?.querySelector('.certs__heading-row')
+    if (!row) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setHeadVis(true); obs.disconnect() } },
+      { threshold: 0.1 }
+    )
+    obs.observe(row)
     return () => obs.disconnect()
   }, [])
 
   return (
     <section id="certificates" className="certs" ref={sec}>
       <div className="wrap">
-        <div className="certs__heading-row reveal">
+        <div
+          className="certs__heading-row"
+          style={{
+            opacity:    headVis ? 1 : 0,
+            transform:  headVis ? 'none' : 'translateY(16px)',
+            transition: 'opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1)',
+          }}
+        >
           <h2 className="certs__heading">
             Sertifikat &amp; <em>Pencapaian</em>
           </h2>
@@ -53,29 +109,7 @@ export default function Certificates() {
         ) : (
           <div className="certs__grid">
             {certificates.map((c, i) => (
-              <article
-                key={c.id}
-                className={`cert reveal reveal-d${Math.min(i + 1, 5)}`}
-              >
-                {c.link ? (
-                  <a
-                    href={c.link}
-                    className="cert__inner"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Buka sertifikat ${c.id}`}
-                  >
-                    <CertImg cert={c} />
-                    <div className="cert__hover">
-                      <FiExternalLink size={20} />
-                    </div>
-                  </a>
-                ) : (
-                  <div className="cert__inner">
-                    <CertImg cert={c} />
-                  </div>
-                )}
-              </article>
+              <CertCard key={c.id} cert={c} index={i} />
             ))}
           </div>
         )}

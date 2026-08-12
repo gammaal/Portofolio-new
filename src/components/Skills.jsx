@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { skills } from '../data/skills'
 import { FaHtml5, FaJs, FaReact, FaLaravel, FaCode } from 'react-icons/fa'
 import { SiFlutter, SiExpress, SiTailwindcss, SiBootstrap, SiMysql, SiTypescript, SiVite, SiNextdotjs } from 'react-icons/si'
@@ -21,26 +21,75 @@ const ICONS = {
 }
 const getIcon = n => (!n ? <FaCode /> : ICONS[n.toLowerCase().trim()] ?? <FaCode />)
 
-export default function Skills() {
-  const sec      = useRef(null)
-  const [fired, setFired] = useState(false)   // trigger bar animation once
+/* ── Single animated skill card ─────────────────── */
+function SkCard({ skill, index, barFired }) {
+  const ref      = useRef(null)
+  const [vis, setVis] = useState(false)
 
   useEffect(() => {
-    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const el = ref.current; if (!el) return
     const obs = new IntersectionObserver(
-      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
-      { threshold: 0.08 }
-    )
-    els.forEach(el => obs.observe(el))
-
-    // fire bar animation when section enters viewport
-    const secObs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setFired(true); secObs.disconnect() } },
+      ([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect() } },
       { threshold: 0.15 }
     )
-    if (sec.current) secObs.observe(sec.current)
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
-    return () => { obs.disconnect(); secObs.disconnect() }
+  // alternate left/right slide per row
+  const fromLeft = index % 2 === 0
+
+  return (
+    <div
+      ref={ref}
+      className="sk-card"
+      style={{
+        opacity:   vis ? 1 : 0,
+        transform: vis ? 'none' : `translateX(${fromLeft ? '-28px' : '28px'})`,
+        transition: `opacity 0.55s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s,
+                     transform 0.55s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s`,
+      }}
+    >
+      <span className="sk-icon" style={{
+        transition: `transform 0.4s cubic-bezier(0.22,1,0.36,1) ${index * 0.06 + 0.25}s`,
+        transform:  vis ? 'rotate(0deg) scale(1)' : 'rotate(-30deg) scale(0.7)',
+      }}>
+        {getIcon(skill.icon)}
+      </span>
+      <div className="sk-info">
+        <span className="sk-name">{skill.name}</span>
+        <div className="sk-bar-wrap">
+          <div
+            className="sk-bar"
+            style={{
+              width: (barFired && vis) ? `${skill.level}%` : '0%',
+              transition: `width 1s cubic-bezier(0.4,0,0.2,1) ${index * 0.07 + 0.3}s`,
+            }}
+          />
+        </div>
+        <span className="sk-level" style={{
+          opacity: (barFired && vis) ? 1 : 0,
+          transition: `opacity 0.4s ease ${index * 0.07 + 0.8}s`,
+        }}>
+          {skill.level}%
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export default function Skills() {
+  const sec   = useRef(null)
+  const [barFired, setBarFired] = useState(false)
+
+  useEffect(() => {
+    const el = sec.current; if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setBarFired(true); obs.disconnect() } },
+      { threshold: 0.1 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
   }, [])
 
   return (
@@ -56,19 +105,7 @@ export default function Skills() {
 
         <div className="skills__grid">
           {skills.map((s, i) => (
-            <div key={s.name} className={`sk-card reveal reveal-d${Math.min(i + 1, 5)}`}>
-              <span className="sk-icon">{getIcon(s.icon)}</span>
-              <div className="sk-info">
-                <span className="sk-name">{s.name}</span>
-                <div className="sk-bar-wrap">
-                  <div
-                    className="sk-bar"
-                    style={{ width: fired ? `${s.level}%` : '0%' }}
-                  />
-                </div>
-                <span className="sk-level">{s.level}%</span>
-              </div>
-            </div>
+            <SkCard key={s.name} skill={s} index={i} barFired={barFired} />
           ))}
         </div>
       </div>

@@ -491,12 +491,20 @@ main { overflow-x: hidden; }
   overflow: hidden;
   aspect-ratio: 4/5;
   background: var(--bg-3);
-  transition: box-shadow 0.4s ease, transform 0.15s ease;
+  transition: box-shadow 0.4s ease, transform 0.18s cubic-bezier(0.22,1,0.36,1);
   transform-style: preserve-3d;
   will-change: transform;
 }
 .about__photo-frame:hover {
-  box-shadow: 0 0 0 1px var(--blue-line), 0 24px 56px rgba(0,0,0,0.45);
+  box-shadow: 0 0 0 1px var(--blue-line), 0 28px 60px rgba(0,0,0,0.5);
+}
+.about__photo-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: var(--r-lg);
+  transition: background 0.1s ease;
 }
 .about__photo-frame::after {
   content: '';
@@ -737,8 +745,8 @@ main { overflow-x: hidden; }
 .sk-card:hover {
   border-color: var(--blue-line);
   background: var(--bg-4);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(59,130,246,0.08), 0 0 0 1px var(--blue-line);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 10px 30px rgba(59,130,246,0.12), 0 0 0 1px var(--blue-line);
 }
 .sk-icon {
   font-size: 1.35rem;
@@ -780,13 +788,8 @@ main { overflow-x: hidden; }
   margin-top: 4px;
   display: block;
 }
-/* stagger per card via nth-child */
-.sk-card:nth-child(1) { transition-delay: 0s; }
-.sk-card:nth-child(2) { transition-delay: 0.04s; }
-.sk-card:nth-child(3) { transition-delay: 0.08s; }
-.sk-card:nth-child(4) { transition-delay: 0.12s; }
-.sk-card:nth-child(5) { transition-delay: 0.16s; }
-.sk-card:nth-child(6) { transition-delay: 0.20s; }
+/* stagger handled via inline style in SkCard component */
+
 
 /* ─── Certificates ────────────────────────────────── */
 .certs {
@@ -833,9 +836,10 @@ main { overflow-x: hidden; }
               box-shadow 0.3s ease;
 }
 .cert:hover {
-  transform: translateY(-5px);
+  transform: translateY(-7px) scale(1.02);
   border-color: var(--blue-line);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 0 0 1px var(--blue-line);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--blue-line),
+              0 0 20px rgba(59,130,246,0.08);
 }
 .cert__inner { display: block; position: relative; }
 .cert__img {
@@ -1070,25 +1074,25 @@ main { overflow-x: hidden; }
   overflow: hidden;
 }
 
-/* enter: fade + scale in */
+/* enter: slow gentle fade-in */
 .portal-overlay--enter {
-  animation: portalEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: portalEnter 1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes portalEnter {
-  from { opacity: 0; transform: scale(1.05); }
-  to   { opacity: 1; transform: scale(1); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* exit: suck into center then vanish */
+/* exit: smooth iris-close then fade */
 .portal-overlay--exit {
-  animation: portalExit 0.9s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  animation: portalExit 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   pointer-events: none;
 }
 @keyframes portalExit {
-  0%   { opacity: 1; transform: scale(1); clip-path: circle(120% at 50% 50%); }
-  60%  { opacity: 1; transform: scale(0.98); clip-path: circle(30% at 50% 50%); }
-  85%  { opacity: 0.6; transform: scale(0.92); clip-path: circle(8% at 50% 50%); }
-  100% { opacity: 0;   transform: scale(0.85); clip-path: circle(0% at 50% 50%); }
+  0%   { opacity: 1; clip-path: circle(100vmax at 50% 50%); }
+  70%  { opacity: 1; clip-path: circle(18%   at 50% 50%); }
+  90%  { opacity: 0.4; clip-path: circle(4%  at 50% 50%); }
+  100% { opacity: 0;   clip-path: circle(0%  at 50% 50%); }
 }
 
 .portal-canvas {
@@ -1098,49 +1102,182 @@ main { overflow-x: hidden; }
   height: 100%;
 }
 
-/* center text label */
+/* ── label wrapper */
 .portal-label {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   pointer-events: none;
-  animation: labelPop 0.7s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@keyframes labelPop {
-  from { opacity: 0; transform: translateY(10px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
+/* "PORTFOLIO" subtitle — fades up first */
+.portal-label__sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(96, 165, 250, 0.6);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* "Welcome" — gradient + soft glow */
 .portal-label__name {
+  display: flex;
+  gap: 0.03em;
   font-family: 'Sora', sans-serif;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-size: clamp(2.6rem, 7vw, 5rem);
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #fff;
-  text-shadow:
-    0 0 20px rgba(59, 130, 246, 0.9),
-    0 0 60px rgba(29, 78, 216, 0.5);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  background: linear-gradient(135deg, #bfdbfe 0%, #ffffff 40%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.5))
+          drop-shadow(0 0 64px rgba(29, 78, 216, 0.28));
 }
 
-/* animated loading dots */
+/* each letter rises smoothly with stagger */
+.portal-label__char {
+  display: inline-block;
+  opacity: 0;
+  animation: charRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes charRise {
+  from { opacity: 0; transform: translateY(16px) scale(0.88); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    filter: blur(0px); }
+}
+
+/* progress bar */
+.portal-label__bar-wrap {
+  width: 140px;
+  height: 2px;
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 4px;
+  opacity: 0;
+  animation: fadeUp 0.6s 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.portal-label__bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6, #93c5fd);
+  border-radius: 99px;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+  animation: barFill 1.6s 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes barFill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* loading dots */
 .portal-label__dots {
   display: flex;
-  gap: 8px;
+  gap: 7px;
+  opacity: 0;
+  animation: fadeUp 0.6s 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 .portal-label__dots span {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: rgba(96, 165, 250, 0.8);
-  animation: dotPulse 1.2s ease-in-out infinite;
+  background: rgba(96, 165, 250, 0.7);
+  animation: dotPulse 1.4s ease-in-out infinite;
 }
 .portal-label__dots span:nth-child(1) { animation-delay: 0s; }
-.portal-label__dots span:nth-child(2) { animation-delay: 0.2s; }
-.portal-label__dots span:nth-child(3) { animation-delay: 0.4s; }
+.portal-label__dots span:nth-child(2) { animation-delay: 0.22s; }
+.portal-label__dots span:nth-child(3) { animation-delay: 0.44s; }
+
+/* shared keyframes */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes dotPulse {
-  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
-  40%            { transform: scale(1.2); opacity: 1; }
+  0%, 80%, 100% { transform: scale(0.65); opacity: 0.35; }
+  40%            { transform: scale(1.25); opacity: 1; }
+}
+
+/* ─── Section divider pulse ─────────────────────── */
+@keyframes dividerPulse {
+  0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+  50%       { opacity: 1;   transform: scaleX(1); }
+}
+.about::before, .projects::before, .skills::before,
+.certs::before, .contact::before {
+  animation: dividerPulse 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* ─── Contact arrow ──────────────────────────────── */
+.contact__item {
+  overflow: hidden;
+}
+
+/* ─── Smooth page-load fade ──────────────────────── */
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+#root {
+  animation: pageIn 0.5s ease both;
+}
+
+/* ─── Hero scroll button enhanced ───────────────── */
+.hero__scroll {
+  position: absolute;
+  bottom: 32px; left: 40px;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--text-3);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none; border: none;
+  animation: scrollBob 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes scrollBob {
+  0%,100% { transform: translateY(0);   opacity: 0.45; }
+  50%      { transform: translateY(6px); opacity: 0.85; }
+}
+.hero__scroll:hover {
+  color: var(--blue-2);
+  animation-play-state: paused;
+}
+
+/* ─── Nav logo shimmer ───────────────────────────── */
+.nav__logo {
+  position: relative;
+  overflow: hidden;
+}
+.nav__logo::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(96,165,250,0.18), transparent);
+  transition: left 0.45s ease;
+}
+.nav__logo:hover::after { left: 150%; }
+
+/* ─── Pj card link hover lift ───────────────────── */
+.pj__link {
+  transform: translateY(0);
+}
+.pj__link:hover {
+  transform: translateY(-2px);
+}
+
+/* ─── Sk bar glow ────────────────────────────────── */
+.sk-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue-2));
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(59,130,246,0.4);
 }
