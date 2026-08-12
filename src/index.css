@@ -1281,3 +1281,28 @@ main { overflow-x: hidden; }
   border-radius: 3px;
   box-shadow: 0 0 6px rgba(59,130,246,0.4);
 }
+
+/* ─── Ripple wave keyframe ───────────────────────── */
+@keyframes ripple-expand {
+  from { transform: scale(0); opacity: 1; }
+  to   { transform: scale(1); opacity: 0; }
+}
+
+/* ─── SplitHeading wrapper ───────────────────────── */
+.split-word {
+  will-change: transform, opacity;
+}
+
+/* ─── Hero parallax wrapper — no overflow clip ───── */
+.hero__wrap {
+  will-change: transform, opacity;
+}
+
+/* ─── Skill card hover — icon transitions via JS ─── */
+.sk-card:hover .sk-icon {
+  border-color: var(--blue-line);
+  background:   var(--blue-soft);
+}
+
+/* ─── Nav entrance uses inline styles now ───────── */
+/* (old keyframe-based entrance removed — handled in JS) */

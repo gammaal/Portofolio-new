@@ -8,6 +8,7 @@ import Certificates from './components/Certificates'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import LoadingPortal from './components/LoadingPortal'
+import CursorTrail from './components/CursorTrail'
 
 function App() {
   const [loaded, setLoaded] = useState(false)
@@ -15,6 +16,7 @@ function App() {
   return (
     <>
       {!loaded && <LoadingPortal onDone={() => setLoaded(true)} />}
+      <CursorTrail />
       <Header />
       <main>
         <Hero />

@@ -176,8 +176,9 @@ function MagneticBtn({ children, className, onClick }) {
 
 /* ── Hero ────────────────────────────────────────── */
 export default function Hero() {
-  const go      = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  const spotRef = useRef(null)
+  const go         = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  const spotRef    = useRef(null)
+  const contentRef = useRef(null)
 
   // cursor spotlight
   useEffect(() => {
@@ -190,6 +191,19 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', move)
   }, [])
 
+  // parallax: content drifts up gently as user scrolls
+  useEffect(() => {
+    const el = contentRef.current
+    if (!el || window.matchMedia('(pointer: coarse)').matches) return
+    const onScroll = () => {
+      const y = window.scrollY
+      el.style.transform = `translateY(${y * 0.18}px)`
+      el.style.opacity   = Math.max(0, 1 - y / 500)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <section id="home" className="hero">
       <ParticleCanvas />
@@ -198,7 +212,7 @@ export default function Hero() {
         <div className="hero__spot" ref={spotRef} />
       </div>
 
-      <div className="hero__wrap hero__wrap--centered">
+      <div className="hero__wrap hero__wrap--centered" ref={contentRef}>
         <div className="hero__left">
           <div className="hero__tag">
             <span className="hero__tag-line" />

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import fotoSaya from '../assets/saya.jpeg'
 import { useReveal } from '../hooks/useReveal'
+import SplitHeading from './SplitHeading'
 
 /* ── Count-up with spring easing ─────────────────── */
 function useCountUp(target, duration = 1400, enabled = false) {
@@ -80,8 +81,7 @@ export default function About() {
             <p className="about__label" data-reveal>Tentang saya</p>
             <h2 className="about__heading" data-reveal data-reveal-delay="1">
               Kode yang rapi,<br />hasil yang <em>nyata</em>
-            </h2>
-            <div className="about__body" data-reveal data-reveal-delay="2">
+            </h2>            <div className="about__body" data-reveal data-reveal-delay="2">
               <p>
                 Saya Gamma Alfatah, pelajar di SMK Wikrama Bogor jurusan
                 Pengembangan Perangkat Lunak dan Gim (PPLG). Tertarik pada

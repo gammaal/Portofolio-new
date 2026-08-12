@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { FiMail, FiInstagram, FiMessageCircle, FiArrowRight } from 'react-icons/fi'
+import SplitHeading from './SplitHeading'
 
 const contacts = [
   {
@@ -109,7 +110,7 @@ export default function Contact() {
             }}
           >
             <h2 className="contact__heading">
-              Punya ide?<br /><em>Ayo ngobrol.</em>
+              <SplitHeading as="span" stagger={70}>{`Punya ide?\nAyo ngobrol.`}</SplitHeading>
             </h2>
             <p className="contact__body">
               Terbuka untuk kolaborasi, pertanyaan, atau sekadar berkenalan.

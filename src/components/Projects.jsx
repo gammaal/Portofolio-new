@@ -1,29 +1,35 @@
 import { useState, useEffect, useRef } from 'react'
 import { projects } from '../data/projects'
 import { FiExternalLink, FiGithub } from 'react-icons/fi'
+import { useTilt } from '../hooks/useTilt'
+import { useRipple } from '../hooks/useRipple'
+import SplitHeading from './SplitHeading'
 
 function PjImage({ src, alt }) {
   const [failed, setFailed] = useState(false)
   if (!src || failed)
     return <div className="pj__placeholder">Belum ada gambar</div>
   return (
-    <img
-      className="pj__img"
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setFailed(true)}
-    />
+    <img className="pj__img" src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} />
   )
 }
 
-/* ── Animated project card ───────────────────────── */
+/* ── Project card with tilt + ripple ─────────────── */
 function PjCard({ project, index }) {
-  const ref  = useRef(null)
+  const obs_ref = useRef(null)
   const [vis, setVis] = useState(false)
+  const { ref: tiltRef, shineRef, onMouseMove, onMouseLeave } = useTilt({ maxTilt: 6, scale: 1.02, shine: 0.06 })
+  const { ref: rippleRef, createRipple } = useRipple('rgba(59,130,246,0.15)')
+
+  // merge refs
+  const setRef = el => {
+    obs_ref.current  = el
+    tiltRef.current  = el
+    rippleRef.current = el
+  }
 
   useEffect(() => {
-    const el = ref.current; if (!el) return
+    const el = obs_ref.current; if (!el) return
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect() } },
       { threshold: 0.08 }
@@ -34,15 +40,24 @@ function PjCard({ project, index }) {
 
   return (
     <article
-      ref={ref}
+      ref={setRef}
       className="pj"
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      onClick={createRipple}
       style={{
         opacity:   vis ? 1 : 0,
-        transform: vis ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(24px)',
-        transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.1}s,
-                     transform 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.1}s`,
+        transform: vis ? 'scale(1) translateY(0)' : 'scale(0.94) translateY(28px)',
+        transition: `opacity 0.65s cubic-bezier(0.22,1,0.36,1) ${index * 0.12}s,
+                     transform 0.65s cubic-bezier(0.22,1,0.36,1) ${index * 0.12}s`,
+        position: 'relative', overflow: 'hidden',
       }}
     >
+      {/* tilt shine overlay */}
+      <div ref={shineRef} aria-hidden="true" style={{
+        position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', borderRadius: 'inherit',
+      }} />
+
       <div className="pj__img-wrap">
         <PjImage src={project.image} alt={project.title} />
       </div>
@@ -65,8 +80,7 @@ function PjCard({ project, index }) {
             </a>
           )}
           {project.repoUrl && (
-            <a href={project.repoUrl} className="pj__link"
-               target="_blank" rel="noreferrer">
+            <a href={project.repoUrl} className="pj__link" target="_blank" rel="noreferrer">
               <FiGithub size={12} /> Kode
             </a>
           )}
@@ -77,7 +91,7 @@ function PjCard({ project, index }) {
 }
 
 export default function Projects() {
-  const sec     = useRef(null)
+  const sec       = useRef(null)
   const [headVis, setHeadVis] = useState(false)
 
   useEffect(() => {
@@ -102,9 +116,9 @@ export default function Projects() {
             transition: 'opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
-          <h2 className="projects__heading">
-            Karya &amp; <span>Project</span>
-          </h2>
+          <SplitHeading as="h2" className="projects__heading" stagger={80}>
+            {`Karya & Project`}
+          </SplitHeading>
           <span className="projects__count">{projects.length} project</span>
         </div>
 
