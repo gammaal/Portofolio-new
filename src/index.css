@@ -1025,20 +1025,34 @@ main { overflow-x: hidden; }
 .portal-overlay--enter { animation: portalIn 1s cubic-bezier(0.22,1,0.36,1) both; }
 @keyframes portalIn { from { opacity: 0; } to { opacity: 1; } }
 .portal-overlay--exit {
-  animation: portalOut 1.1s cubic-bezier(0.4,0,0.2,1) forwards;
+  animation: portalOut 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   pointer-events: none;
 }
 @keyframes portalOut {
-  0%   { opacity:1; clip-path: circle(100vmax at 50% 50%); }
-  70%  { opacity:1; clip-path: circle(16% at 50% 50%); }
-  90%  { opacity:0.3; clip-path: circle(3% at 50% 50%); }
-  100% { opacity:0;   clip-path: circle(0% at 50% 50%); }
+  0%   { opacity: 1;   clip-path: circle(100vmax at 50% 50%); }
+  50%  { opacity: 1;   clip-path: circle(28%    at 50% 50%); }
+  78%  { opacity: 0.7; clip-path: circle(8%     at 50% 50%); }
+  92%  { opacity: 0.2; clip-path: circle(2%     at 50% 50%); }
+  100% { opacity: 0;   clip-path: circle(0%     at 50% 50%); }
 }
 .portal-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .portal-label {
   position: relative; z-index: 1;
   display: flex; flex-direction: column; align-items: center; gap: 12px;
   pointer-events: none;
+  /* smooth transition baseline */
+  transform-origin: center center;
+}
+
+/* ── Suck into portal ── */
+.portal-label--suck {
+  animation: labelSuck 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes labelSuck {
+  0%   { opacity: 1;   transform: scale(1)    translateY(0px);  filter: blur(0px);  }
+  40%  { opacity: 0.9; transform: scale(0.65) translateY(8px);  filter: blur(2px);  }
+  75%  { opacity: 0.4; transform: scale(0.22) translateY(16px); filter: blur(7px);  }
+  100% { opacity: 0;   transform: scale(0.04) translateY(22px); filter: blur(18px); }
 }
 .portal-label__sub {
   font-family: 'Inter', sans-serif;
