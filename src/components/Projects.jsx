@@ -21,7 +21,7 @@ export default function Projects() {
   const sec = useRef(null)
 
   useEffect(() => {
-    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const els = sec.current?.querySelectorAll('.reveal, .reveal-scale') ?? []
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
       { threshold: 0.1 }
@@ -44,9 +44,9 @@ export default function Projects() {
           <p style={{ color: 'var(--text-3)', fontStyle: 'italic' }}>
           </p>
         ) : (
-          <div className="projects__grid reveal reveal-d1">
-            {projects.map((p) => (
-              <article key={p.id} className="pj">
+          <div className="projects__grid">
+            {projects.map((p, i) => (
+              <article key={p.id} className={`pj reveal reveal-scale reveal-d${Math.min(i + 1, 5)}`}>
                 <div className="pj__img-wrap">
                   <PjImage src={p.image} alt={p.title} />
                 </div>

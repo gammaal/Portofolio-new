@@ -58,7 +58,7 @@ export default function About() {
   const [fired, setFired] = useState(false)
 
   useEffect(() => {
-    const els = sec.current?.querySelectorAll('.reveal') ?? []
+    const els = sec.current?.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale') ?? []
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
       { threshold: 0.1 }
@@ -107,8 +107,10 @@ export default function About() {
           </div>
 
           {/* Right — photo with tilt */}
-          <div className="about__photo-side reveal reveal-d2">
-            <TiltPhoto src={fotoSaya} alt="Gamma Alfatah" />
+          <div className="about__photo-side reveal-right reveal-d2">
+            <div className="about__photo-float">
+              <TiltPhoto src={fotoSaya} alt="Gamma Alfatah" />
+            </div>
             <div className="about__photo-deco" />
           </div>
         </div>
